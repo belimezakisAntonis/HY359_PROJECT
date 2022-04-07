@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+    <meta charset="UTF-8">
+
+    <script>
+        function Logout(){
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status===201)) {
+
+                    $(document).ready(function () {
+                        $(location).attr("href", "index.html");
+                    });
+                } else {
+                    alert('Request failed. Returned status of ' + xhr.status);
+                }
+            };
+            xhr.open('POST', 'Logout');
+
+            xhr.send();
+        }
+    </script>
+    <script>
+        function isLoggedIn() {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                if (xhr.readyState === 4 && xhr.status === 201 ) {
+
+                    $("#middle").html("");
+                    $("#middle").append("Welcome again "+xhr.responseText);
+                }
+                else{
+
+                    //    alert('Request failed. Returned status of ' + xhr.status);
+                }
+            };
+
+            xhr.open('GET', 'Login');
+            xhr.send();
+        }
+
+    </script>
+    <script>
+        function get_doctors(){
+            var xhr = new XMLHttpRequest();
+
+            xhr.onload = function () {
+                if (xhr.readyState === 4 && xhr.status === 200 ) {
+
+
+                    const xhr2 = new XMLHttpRequest();
+
+                    xhr2.onload = function () {
+                        if(xhr2.readyState === 4 && xhr2.status === 200){
+                            const datas = xhr2.responseText;
+                            var start = 0;
+                            var k = 0;
+                            while(datas[k]!==','){
+                                k++;
+                                if(datas[k] !==','){continue;}
+                                if(datas[k] ===','){
+                                    $('#Doctors').append('<button onclick=' +
+                                        '"deleteDoctors()">'+ "delete " +datas.substring(start,k-1)+'</button>');
+                                    ++k;
+                                    start = k;
+                                    continue;
+                                }
+                                if(datas[k] ===' '){
+                                    break;
+                                }
+                            }
+                        }
+                    };
+
+                    xhr2.open('GET','http://localhost:8080/HY359_PROJECT_war_exploded/health/admin/doctors/usernames');
+                    xhr2.setRequestHeader("Content-type", "text/html");
+                    xhr2.send();
+                } else if (xhr.status !== 200 ) {
+                    //    alert('Request failed. Returned status of ' + xhr.status);
+                }
+            };
+
+            xhr.open('GET', 'Registration');
+            xhr.setRequestHeader("Content-type", "text/html");
+            xhr.send();
+        }
+    </script>
+
+    <title>ADMIN</title>
+
+</head>
+<body>
+<h1><bold>HELLO ADMIN</bold></h1>
+<form action="Registration" method="get">
+    <script>
+        $(document).ready(function () {
+            isLoggedIn();
+        });
+    </script>
+    <div id="Doctors">
+        <button name="doctors" onclick="getDoctors();return false;">doctors</button>
+    </div>
+    <div id="Users">
+        <button name="users" onclick="getUsers();return false;">USERS</button>
+        <button name="noUsers" onclick="certificate();return false;">Notifications</button>
+    </div>
+
+</form>
+
+<p>
+<div id="middle"></div>
+</p>
+<h6>
+    <button name="logout" onclick="Logout()">logout</button>
+</h6>
+<footer>
+    <a href="https://www.vrisko.gr/efimeries-farmakeion/irakleio" target="_blank"><img src="https://www.vrisko.gr/graphlink/Pharmacies/image/468x60_Banner_n/?Region=irakleio&NativeRegion=%ce%97%cf%81%ce%ac%ce%ba%ce%bb%ce%b5%ce%b9%ce%bf&" border="0" alt="Εφημερεύοντα Φαρμακεία Ηράκλειο" /></a>
+    <a href="https://www.vrisko.gr/efimeries-nosokomeion?SelectedCity=hrakleio" target="_blank"><img src="https://www.vrisko.gr/graphlink/Hospitals/image/468x60_Banner_n/?Prefecture=hrakleio&NativePrefecture=%ce%97%ce%a1%ce%91%ce%9a%ce%9b%ce%95%ce%99%ce%9f&" border="0" alt="Εφημερεύοντα Νοσοκομεία ΗΡΑΚΛΕΙΟ" /></a>
+    <a href="https://www.ekab.gr/files/entypa/EKAB-protes-voithies.pdf">AMESH VOITHEIA</a>
+    <a href="https://www.venizeleio.gr/">VENIZELEIO</a>
+    <a href="https://www.pagni.gr/">PAGNI</a>
+    <a href="https://covid19.gov.gr/">INFO COVID</a>
+</footer>
+</body>
+</html>
